@@ -14,3 +14,33 @@ test('Simple Alert Handling', async ({ page }) => {
 
     await page.close();
 });
+
+test('Confirm Alert - Ok Button', async ({ page }) => {
+    await page.goto('https://the-internet.herokuapp.com/javascript_alerts');
+    
+    page.on("dialog", async(alert) => {
+        const alertMessage = alert.message();
+        await expect(alertMessage).toEqual('I am a JS Confirm');
+        await alert.accept();
+        await expect(page.locator('#result')).toHaveText('You clicked: Ok');
+    })
+
+    await page.locator('button[onclick="jsConfirm()"]').click();
+
+    await page.close();
+});
+
+test('Confirm Alert - Cancel Button', async ({ page }) => {
+    await page.goto('https://the-internet.herokuapp.com/javascript_alerts');
+    
+    page.on("dialog", async(alert) => {
+        const alertMessage = alert.message();
+        await expect(alertMessage).toEqual('I am a JS Confirm');
+        await alert.dismiss();
+        await expect(page.locator('#result')).toHaveText('You clicked: Cancel');
+    })
+
+    await page.locator('button[onclick="jsConfirm()"]').click();
+
+    await page.close();
+});
